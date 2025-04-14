@@ -4,73 +4,84 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
-import android.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.lessons11.R
 import com.example.lessons11.data.model.Weather
 import com.example.lessons11.databinding.FragmentHomeBinding
-import com.google.android.material.snackbar.Snackbar
+import com.example.lessons11.ui.notifications.NotificationsFragment
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var viewModel: HomeViewModel
+    private val adapter = MainFragmentAdapter(object :OnItemViewCliclListner{
+        override fun onItemViewClick(weather: Weather) {
+         val manager = activity?.supportFragmentManager
+            if(manager!=null){
+                val bundle = Bundle()
+                bundle.putParcelable(NotificationsFragment.BUNDLE_NAME, weather)
+                manager.beginTransaction()
+                    .add(R.id.container, NotificationsFragment.newInstance(bundle))
+                    .commitAllowingStateLoss()
+            }
+        }
+
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-        homeViewModel.getLiveData().observe(viewLifecycleOwner, Observer {
-            renderData(it)
-        })
-        homeViewModel.getWeather()
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
         return root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.mainFragmentRecycleView.adapter = adapter
+        binding.mainFrgamentFAB.setOnClickListener {
 
-   private fun renderData(appState: AppState){
-      when(appState){
-          is AppState.Error -> {
-              binding.loadingLayout.visibility = View.GONE
-              /*Snackbar.make(binding.mainView,"Error",Snackbar.LENGTH_INDEFINITE).setAction("Reload"){
+        }
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel.getLiveData().observe(viewLifecycleOwner, Observer {
+            renderData(it)
+        })
+        viewModel.getWeather()
+    }
 
-              }*/
-          }
-          AppState.Loading -> {
-              binding.loadingLayout.visibility = View.VISIBLE
-          }
-          is AppState.Success -> {
-              val weatherData = appState.weatherData
-              binding.loadingLayout.visibility = View.GONE
-              setData(weatherData)
-          }
-      }
-   }
 
-    private fun setData(weatherData:Weather){
-        binding.cityName.text = weatherData.city.city
-        binding.cityCoordinates.text = String.format(
-            weatherData.city.lat,
-            weatherData.city.lon
-        )
-        binding.temperatureValue.text = weatherData.temperature.toString()
+    private fun renderData(appState: AppState) {
+        when (appState) {
+            is AppState.Error -> {
+                binding.mainFragmnetLoadingLayout.visibility = View.GONE
+                /*Snackbar.make(binding.mainView,"Error",Snackbar.LENGTH_INDEFINITE).setAction("Reload"){
+
+                }*/
+            }
+
+            AppState.Loading -> {
+                binding.mainFragmnetLoadingLayout.visibility = View.VISIBLE
+            }
+
+            is AppState.Success -> {
+                adapter.setWeather(appState.weatherData)
+                binding.mainFragmnetLoadingLayout.visibility = View.GONE
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter.removeListener()
         _binding = null
     }
+}
+
+interface OnItemViewCliclListner{
+    fun onItemViewClick(weather: Weather)
 }

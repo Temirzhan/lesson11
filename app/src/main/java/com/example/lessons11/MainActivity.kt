@@ -1,13 +1,18 @@
 package com.example.lessons11
 
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Note
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.lessons11.data.model.Weather
 import com.example.lessons11.databinding.ActivityMainBinding
+import java.util.Objects
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,5 +36,8 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
     }
+
+
 }

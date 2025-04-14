@@ -8,9 +8,9 @@ import com.example.lessons11.data.PepositoryImpl
 import com.example.lessons11.data.Repository
 import java.lang.Thread.sleep
 
+// vie model слой который отвечает за логику
 class HomeViewModel(
-    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(
-    ),
+    private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData(), // liveData которая помогает следить за AppsTate
     private val repositoryImpl:Repository = PepositoryImpl()
 ) : ViewModel() {
 

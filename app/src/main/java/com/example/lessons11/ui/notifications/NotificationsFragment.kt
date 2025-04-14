@@ -7,15 +7,22 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.lessons11.data.model.Weather
 import com.example.lessons11.databinding.FragmentNotificationsBinding
 
 class NotificationsFragment : Fragment() {
 
     private var _binding: FragmentNotificationsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+    companion object {
+        const val  BUNDLE_NAME = "WEATHER"
+        fun newInstance(bundle: Bundle):NotificationsFragment{
+            val fragment = NotificationsFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,11 +35,18 @@ class NotificationsFragment : Fragment() {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val weather = arguments?.getParcelable<Weather>(BUNDLE_NAME)
+        if (weather!=null){
+            val city = weather.city
+            binding.cityName.text = city.city
+            binding.cityCoordinates.text = city.lat + " " + city.lon
+            binding.temperatureValue.text = weather.temperature.toString()
+        }
     }
 
     override fun onDestroyView() {

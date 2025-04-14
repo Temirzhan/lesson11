@@ -4,5 +4,5 @@ import com.example.lessons11.data.model.Weather
 
 interface Repository {
     fun getWeatherFromServer():Weather
-    fun getWeatherFromLocalStorage():Weather
+    fun getWeatherFromLocalStorage():List<Weather>
 }
