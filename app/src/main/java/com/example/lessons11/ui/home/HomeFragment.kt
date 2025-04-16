@@ -16,19 +16,19 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: HomeViewModel
+    val viewModel: HomeViewModel by lazy {
+        ViewModelProvider(this).get(HomeViewModel::class.java)
+    }
     private val adapter = MainFragmentAdapter(object :OnItemViewCliclListner{
         override fun onItemViewClick(weather: Weather) {
-         val manager = activity?.supportFragmentManager
-            if(manager!=null){
-                val bundle = Bundle()
-                bundle.putParcelable(NotificationsFragment.BUNDLE_NAME, weather)
-                manager.beginTransaction()
-                    .add(R.id.container, NotificationsFragment.newInstance(bundle))
+            activity?.supportFragmentManager?.apply {
+                beginTransaction()
+                    .add(R.id.container, NotificationsFragment.newInstance(Bundle().apply {
+                        putParcelable(NotificationsFragment.BUNDLE_NAME, weather)
+                    }))
                     .commitAllowingStateLoss()
             }
         }
-
     })
 
     override fun onCreateView(
@@ -47,7 +47,6 @@ class HomeFragment : Fragment() {
         binding.mainFrgamentFAB.setOnClickListener {
 
         }
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer {
             renderData(it)
         })

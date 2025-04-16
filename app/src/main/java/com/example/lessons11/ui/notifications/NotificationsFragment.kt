@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.lessons11.data.model.City
 import com.example.lessons11.data.model.Weather
 import com.example.lessons11.databinding.FragmentNotificationsBinding
 
@@ -40,12 +41,14 @@ class NotificationsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val weather = arguments?.getParcelable<Weather>(BUNDLE_NAME)
-        if (weather!=null){
-            val city = weather.city
-            binding.cityName.text = city.city
-            binding.cityCoordinates.text = city.lat + " " + city.lon
-            binding.temperatureValue.text = weather.temperature.toString()
+        val weather = arguments?.getParcelable<Weather>(BUNDLE_NAME)?.let { weather ->
+            weather.city.also {city ->
+                binding.cityName.text = city.city
+                binding.cityCoordinates.text = city.lat + " " + city.lon
+                binding.temperatureValue.text = weather.temperature.toString()
+
+            }
+
         }
     }
 
