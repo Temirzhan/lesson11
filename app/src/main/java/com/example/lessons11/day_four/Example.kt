@@ -1,6 +1,5 @@
 package com.example.lessons11.day_four
 
-import android.provider.ContactsContract.CommonDataKinds.Note
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

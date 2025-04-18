@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.lessons11.R
 import com.example.lessons11.data.model.Weather
 import com.example.lessons11.databinding.FragmentHomeBinding
-import com.example.lessons11.ui.notifications.NotificationsFragment
+import com.example.lessons11.ui.Details.DetailsFragment
 
 class HomeFragment : Fragment() {
 
@@ -23,8 +23,8 @@ class HomeFragment : Fragment() {
         override fun onItemViewClick(weather: Weather) {
             activity?.supportFragmentManager?.apply {
                 beginTransaction()
-                    .add(R.id.container, NotificationsFragment.newInstance(Bundle().apply {
-                        putParcelable(NotificationsFragment.BUNDLE_NAME, weather)
+                    .add(R.id.container, DetailsFragment.newInstance(Bundle().apply {
+                        putParcelable(DetailsFragment.BUNDLE_NAME, weather)
                     }))
                     .commitAllowingStateLoss()
             }
