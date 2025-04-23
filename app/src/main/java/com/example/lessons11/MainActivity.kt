@@ -10,7 +10,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.lessons11.data.model.Weather
+import com.example.lessons11.data.fake.model.Weather
 import com.example.lessons11.databinding.ActivityMainBinding
 import com.example.lessons11.databinding.ActivityMainBrowserBinding
 import java.util.Objects

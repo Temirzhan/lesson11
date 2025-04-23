@@ -13,11 +13,19 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.lessons11.R
-import com.example.lessons11.data.model.Weather
-import com.example.lessons11.data.model.WeatherDTO
+import com.example.lessons11.data.fake.model.Weather
+import com.example.lessons11.data.fake.model.WeatherDTO
 import com.example.lessons11.databinding.FragmentDetailsBinding
+import com.example.lessons11.ui.home.AppState
+import com.example.lessons11.ui.home.HomeViewModel
 import com.google.gson.Gson
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStreamReader
 import java.net.MalformedURLException
 import java.net.URL
@@ -34,6 +42,10 @@ class DetailsFragment : Fragment() {
     private var _binding: FragmentDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var weatherBundle: Weather
+
+    val viewModel: DetailsViewModel by lazy {
+        ViewModelProvider(this).get(DetailsViewModel::class.java)
+    }
     companion object {
         const val  BUNDLE_NAME = "WEATHER"
         fun newInstance(bundle: Bundle):DetailsFragment{
@@ -49,8 +61,6 @@ class DetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this).get(DetailsViewModel::class.java)
 
 
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
@@ -67,25 +77,43 @@ class DetailsFragment : Fragment() {
         weatherBundle = arguments?.getParcelable(BUNDLE_NAME) ?: Weather()
         binding.mainView.visibility = View.GONE
         binding.loadingLayout.visibility = View.VISIBLE
-        loadWeather()
+        val MAIN_LINK = "https://api.weather.yandex.ru/v2/forecast?"
+        viewModel.getWeatherDetailsFromServer(MAIN_LINK +
+                "lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
+        viewModel.getLiveData().observe(viewLifecycleOwner) { appState ->
+            displayWeather(appState)
+        }
     }
 
 
-    private fun displayWeather(weatherDTO: WeatherDTO) {
+    private fun displayWeather(appState: AppState) {
         with(binding) {
-            mainView.visibility = View.VISIBLE
-            loadingLayout.visibility = View.GONE
-            val city = weatherBundle.city
-            cityName.text = city.city
-            cityCoordinates.text = String.format(
-                city.lat.toString(),
-                city.lon.toString()
-            )
-            //сюда нужно добавить тип погоды и ощущается как
-            temperatureValue.text = weatherDTO.fact?.temp.toString()
-
-
+            when (appState) {
+                is AppState.Success -> {
+                    binding.mainView.visibility = View.VISIBLE
+                    binding.loadingLayout.visibility = View.GONE
+                    setWeather(appState.weatherData[0])
+                }
+                is AppState.Loading -> {
+                    binding.mainView.visibility = View.GONE
+                    binding.loadingLayout.visibility = View.VISIBLE
+                }
+                is AppState.Error -> {
+                    binding.mainView.visibility = View.VISIBLE
+                    binding.loadingLayout.visibility = View.GONE
+                }
+            }
         }
+    }
+
+    private fun setWeather(weather: Weather){
+        val city = weatherBundle.city
+        binding.cityName.text = city.city
+        binding.cityCoordinates.text = String.format(
+            city.lat.toString(),
+            city.lon.toString()
+        )
+        binding.temperatureValue.text = weather.temperature.toString()
     }
 
 
@@ -94,7 +122,38 @@ class DetailsFragment : Fragment() {
         _binding = null
     }
 
+    /*
+    private fun getWeather(){
+        binding.mainView.visibility = View.GONE
+        binding.loadingLayout.visibility = View.VISIBLE
 
+        val client = OkHttpClient() // создаем клиент
+        val builder:Request.Builder = Request.Builder() // создаем строителя запросов
+        builder.header("X-Yandex-Weather-Key",YOUR_API_KEY,)// cоздаем заголовок запроса
+        builder.url("https://api.weather.yandex.ru/v2/forecast?lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
+        val request: Request = builder.build() // создаем запрос
+        val call: Call = client.newCall(request) // Ставим в очередь
+        call.enqueue(object :Callback{
+            val handler: Handler = Handler(Looper.getMainLooper())
+            override fun onFailure(call: Call, e: IOException) {
+
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+               val serverResponse:String? = response.body()?.string()
+                if (response.isSuccessful && serverResponse != null){
+                    handler.post{
+                        displayWeather(
+                            Gson().fromJson(serverResponse, WeatherDTO::class.java)
+                        )
+                    }
+                }
+                else{
+
+                }
+            }
+        })
+    }
 
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -140,4 +199,5 @@ class DetailsFragment : Fragment() {
     private fun getLines(reader: BufferedReader): String {
         return reader.lines().collect(Collectors.joining("\n"))
     }
+     */
 }

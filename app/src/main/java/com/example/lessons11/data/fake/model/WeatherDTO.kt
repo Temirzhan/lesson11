@@ -1,4 +1,4 @@
-package com.example.lessons11.data.model
+package com.example.lessons11.data.fake.model
 
 data class WeatherDTO(
     val fact: FactDTO?

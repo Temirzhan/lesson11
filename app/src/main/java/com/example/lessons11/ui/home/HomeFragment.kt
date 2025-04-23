@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.lessons11.R
-import com.example.lessons11.data.model.Weather
+import com.example.lessons11.data.fake.model.Weather
 import com.example.lessons11.databinding.FragmentHomeBinding
 import com.example.lessons11.ui.Details.DetailsFragment
 

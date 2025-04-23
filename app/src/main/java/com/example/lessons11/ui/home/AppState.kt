@@ -1,6 +1,6 @@
 package com.example.lessons11.ui.home
 
-import com.example.lessons11.data.model.Weather
+import com.example.lessons11.data.fake.model.Weather
 
 sealed class AppState {
     data class Success(val weatherData:List<Weather>):AppState()

@@ -7,7 +7,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lessons11.R
-import com.example.lessons11.data.model.Weather
+import com.example.lessons11.data.fake.model.Weather
 
 class MainFragmentAdapter(
     private var onItemViewCliclListner: OnItemViewCliclListner?

@@ -1,4 +1,4 @@
-package com.example.lessons11.data.model
+package com.example.lessons11.data.fake.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
