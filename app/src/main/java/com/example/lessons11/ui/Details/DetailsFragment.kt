@@ -9,10 +9,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.lessons11.R
+import com.example.lessons11.data.fake.model.City
 import com.example.lessons11.data.fake.model.Weather
 import com.example.lessons11.data.fake.model.WeatherDTO
 import com.example.lessons11.databinding.FragmentDetailsBinding
@@ -77,12 +81,10 @@ class DetailsFragment : Fragment() {
         weatherBundle = arguments?.getParcelable(BUNDLE_NAME) ?: Weather()
         binding.mainView.visibility = View.GONE
         binding.loadingLayout.visibility = View.VISIBLE
-        val MAIN_LINK = "https://api.weather.yandex.ru/v2/forecast?"
-        viewModel.getWeatherDetailsFromServer(MAIN_LINK +
-                "lat=${weatherBundle.city.lat}&lon=${weatherBundle.city.lon}")
-        viewModel.getLiveData().observe(viewLifecycleOwner) { appState ->
-            displayWeather(appState)
-        }
+        viewModel.detailsLiveData.observe(viewLifecycleOwner, Observer {
+            displayWeather(it)
+        })
+        viewModel.getWeatherDetailsFromServer(weatherBundle.city.lat.toDouble(),weatherBundle.city.lon.toDouble())
     }
 
 
@@ -90,17 +92,24 @@ class DetailsFragment : Fragment() {
         with(binding) {
             when (appState) {
                 is AppState.Success -> {
+                    Glide.with(requireContext()).load("https://cdn-icons-png.flaticon.com/512/5702/5702121.png").into(binding.image)
                     binding.mainView.visibility = View.VISIBLE
                     binding.loadingLayout.visibility = View.GONE
                     setWeather(appState.weatherData[0])
+                    saveCity(city = weatherBundle.city, weather = Weather(city = weatherBundle.city, temperature = 25),)
                 }
                 is AppState.Loading -> {
+                    Glide.with(requireContext()).load("https://cdn-icons-png.flaticon.com/512/5702/5702121.png").into(binding.image)
                     binding.mainView.visibility = View.GONE
                     binding.loadingLayout.visibility = View.VISIBLE
+                    saveCity(city = weatherBundle.city, weather = Weather(city = weatherBundle.city, temperature = 25),)
                 }
                 is AppState.Error -> {
+                    Glide.with(requireContext()).load("https://cdn-icons-png.flaticon.com/512/5702/5702121.png").into(binding.image)
                     binding.mainView.visibility = View.VISIBLE
                     binding.loadingLayout.visibility = View.GONE
+                    Toast.makeText(requireContext(), appState.error.message, Toast.LENGTH_SHORT).show()
+                    saveCity(city = weatherBundle.city, weather = Weather(city = weatherBundle.city, temperature = 25),)
                 }
             }
         }
@@ -114,6 +123,17 @@ class DetailsFragment : Fragment() {
             city.lon.toString()
         )
         binding.temperatureValue.text = weather.temperature.toString()
+    }
+
+    private fun saveCity(
+        city: City,
+        weather: Weather
+    ){
+        viewModel.saveCituToDB(
+            Weather(
+                city,weather.temperature
+            )
+        )
     }
 
 

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("plugin.parcelize")
+    kotlin("kapt")
 }
 
 android {
@@ -52,6 +53,12 @@ dependencies {
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.okhtp)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter)
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
+    implementation(libs.room)
+    kapt(libs.room.kapt)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

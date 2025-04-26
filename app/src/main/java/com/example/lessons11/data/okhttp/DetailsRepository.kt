@@ -1,8 +1,10 @@
 package com.example.lessons11.data.okhttp
 
-import okhttp3.Callback
+import com.example.lessons11.data.fake.model.WeatherDTO
+import retrofit2.Callback
+
 
 interface DetailsRepository {
-    fun GetWeatherDetailsFromServer( requestLink:String, callback: Callback)
+    fun GetWeatherDetailsFromServer( lat:Double,lon:Double,callback: Callback<WeatherDTO>)
 }
 
