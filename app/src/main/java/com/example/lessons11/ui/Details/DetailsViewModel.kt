@@ -2,15 +2,12 @@ package com.example.lessons11.ui.Details
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.lessons11.App.Companion.getHistoryDao
 import com.example.lessons11.data.fake.model.FactDTO
 import com.example.lessons11.data.fake.model.Weather
 import com.example.lessons11.data.fake.model.WeatherDTO
 import com.example.lessons11.data.fake.model.getDefault
 import com.example.lessons11.data.okhttp.DetailsRepositoryImpl
 import com.example.lessons11.data.retrofit.RemoteDataSource
-import com.example.lessons11.data.room.LocalRepository
-import com.example.lessons11.data.room.LocalRepositoryImpl
 import com.example.lessons11.ui.home.AppState
 
 
@@ -23,7 +20,6 @@ class DetailsViewModel(
     private val detailsRepositoryImpl: DetailsRepositoryImpl = DetailsRepositoryImpl(
      RemoteDataSource()
     ),
-    private val historyRepository:LocalRepository = LocalRepositoryImpl(getHistoryDao())
 
 ): ViewModel() {
 
@@ -34,7 +30,6 @@ class DetailsViewModel(
     }
 
     fun saveCituToDB(weather: Weather){
-        historyRepository.saveEntity(weather)
     }
 
     private val callback = object :retrofit2.Callback<WeatherDTO>{

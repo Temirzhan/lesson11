@@ -7,15 +7,10 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.lessons11.ui.home.HomeFragment"
+        android:name="com.example.lessons11.ui.ContentProvider.ContentProviderFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_content" />
 
-    <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.lessons11.ui.History.HistoryFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"

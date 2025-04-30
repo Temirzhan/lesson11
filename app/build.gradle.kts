@@ -57,8 +57,6 @@ dependencies {
     implementation(libs.retrofit.converter)
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
-    implementation(libs.room)
-    kapt(libs.room.kapt)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
